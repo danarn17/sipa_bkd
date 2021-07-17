@@ -20,44 +20,21 @@ Route::get('/', function () {
 // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Auth::routes();
-//  webmaster, admin, author
-Route::group(
-    [
-        'prefix' => 'admin',
-        'middleware' => [
-            'auth',
-            'role:author|admin|webmaster',
-
-        ],
-    ],
-    function () {
-        Route::get('/dashboard_author', [App\Http\Controllers\HomeController::class, 'dash_author'])->name('dashboard.author');
-    }
-);
 // webmaster, & admin only
 Route::group(
     [
         'prefix' => 'admin',
         'middleware' => [
             'auth',
-
-            'role:admin|webmaster'
+            'role:admin|webmaster|reguler'
         ],
     ],
     function () {
-        Route::get('/dashboard_admin', [App\Http\Controllers\HomeController::class, 'dash_admin'])->name('dashboard.admin');
-    }
-);
-// webmaster only
-Route::group(
-    [
-        'prefix' => 'admin',
-        'middleware' => [
-            'auth',
-            'role:webmaster'
-        ],
-    ],
-    function () {
-        Route::get('/dashboard_webmaster', [App\Http\Controllers\HomeController::class, 'dash_webmaster'])->name('dashboard.webmaster');
+        Route::get('/', [App\Http\Controllers\HomeController::class, 'index']);
+        Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
+        Route::resource('/subkeg', App\Http\Controllers\SubKegiatanController::class);
+        Route::post('/getfirstlevel', [App\Http\Controllers\SubKegiatanController::class, 'getFirstLevel'])->name('getFirstLevel');
+        Route::resource('/childsubkegiatan', App\Http\Controllers\ChildSubKegiatanController::class);
+        Route::resource('/rekening', App\Http\Controllers\RekeningController::class);
     }
 );

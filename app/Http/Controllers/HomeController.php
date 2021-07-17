@@ -21,20 +21,20 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    // public function index()
+    public function index()
+    {
+        return view('admin.dashboard');
+    }
+    // public function dash_webmaster()
     // {
-    //     return view('home');
+    //     return view('admin.dash_webmaster');
     // }
-    public function dash_webmaster()
-    {
-        return view('admin.dash_webmaster');
-    }
-    public function dash_admin()
-    {
-        return view('admin.dash_admin');
-    }
-    public function dash_author()
-    {
-        return view('admin.dash_author');
-    }
+    // public function dash_admin()
+    // {
+    //     return view('admin.dash_admin');
+    // }
+    // public function dash_author()
+    // {
+    //     return view('admin.dash_author');
+    // }
 }

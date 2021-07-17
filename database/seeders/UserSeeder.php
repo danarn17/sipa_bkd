@@ -16,23 +16,23 @@ class UserSeeder extends Seeder
     {
         $webmaster = User::create([
             'name' => 'Danar N',
-            'email' => 'webmaster@uns.ac.id',
-            'password' => bcrypt('adminrhs')
+            'username' => 'webmaster',
+            'password' => bcrypt('webmaster')
         ]);
         $webmaster->assignRole('webmaster');
 
         $webmaster = User::create([
             'name' => 'Admin 1',
-            'email' => 'admin@uns.ac.id',
-            'password' => bcrypt('adminrhs')
+            'username' => 'admin',
+            'password' => bcrypt('adminrhs123')
         ]);
         $webmaster->assignRole('admin');
 
         $webmaster = User::create([
-            'name' => 'Author 1',
-            'email' => 'author@uns.ac.id',
-            'password' => bcrypt('adminrhs')
+            'name' => 'Reguler',
+            'username' => 'user',
+            'password' => bcrypt('user')
         ]);
-        $webmaster->assignRole('author');
+        $webmaster->assignRole('reguler');
     }
 }

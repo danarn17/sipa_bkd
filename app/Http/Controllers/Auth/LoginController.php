@@ -27,7 +27,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    protected $redirectTo = '/admin';
 
     /**
      * Create a new controller instance.
@@ -38,17 +38,20 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
     }
+    /**
+     * Get the login username to be used by the controller.
+     *
+     * @return string
+     */
+    public function username()
+    {
+        return 'username';
+    }
     protected function authenticated(Request $request, $user)
     {
         // dd($user->hasRole('admin'));
-        if ($user->hasRole('webmaster')) {
-            return redirect()->route('dashboard.webmaster');
-        }
-        if ($user->hasRole('admin')) {
-            return redirect()->route('dashboard.admin');
-        }
-        if ($user->hasRole('author')) {
-            return redirect()->route('dashboard.author');
+        if ($user->hasRole(['webmaster', 'admin', 'reguler'])) {
+            return redirect()->route('dashboard');
         }
     }
 }
