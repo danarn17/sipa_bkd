@@ -36,5 +36,6 @@ Route::group(
         Route::post('/getfirstlevel', [App\Http\Controllers\SubKegiatanController::class, 'getFirstLevel'])->name('getFirstLevel');
         Route::resource('/childsubkegiatan', App\Http\Controllers\ChildSubKegiatanController::class);
         Route::resource('/rekening', App\Http\Controllers\RekeningController::class);
+        Route::resource('/anggaran', App\Http\Controllers\AnggaranController::class);
     }
 );
