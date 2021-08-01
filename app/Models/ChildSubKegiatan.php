@@ -16,4 +16,8 @@ class ChildSubKegiatan extends Model
     {
         return $this->hasMany("App\Models\ChildSubKegiatan", 'child_of')->where('level_sub', '!=', 1);;
     }
+    public function parent()
+    {
+        return $this->belongsTo("App\Models\ChildSubKegiatan", 'child_of');
+    }
 }
