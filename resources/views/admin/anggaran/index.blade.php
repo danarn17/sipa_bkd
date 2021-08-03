@@ -20,21 +20,21 @@
                     <div class="card">
                         <div class="card-header d-flex justify-content-between">
                             <h4>Daftar Anggaran</h4>
-                            <button type="button" id="btn-add" class="btn btn-success" data-toggle="modal"
-                                data-target="#form-modal">Tambah</button>
-                            {{-- <a href={{ route('anggaran.create') }} class="btn btn-success">Tambah</a> --}}
+                            {{-- <button type="button" id="btn-add" class="btn btn-success" data-toggle="modal"
+                                data-target="#form-modal">Tambah</button> --}}
+                            <a href={{ route('anggaran.create') }} class="btn btn-success">Tambah</a>
                         </div>
                         <div class="card-body">
                             <div class="table-striped ">
-                                <table id="dataTable" class="table table-striped table-md">
+                                <table id="dataTable" class="table table-striped dt-responsive table-md">
                                     <thead>
                                         <tr class="text-center">
                                             <th>#</th>
                                             <th>Tahun</th>
-                                            <th>Triwulan 1</th>
-                                            <th>Triwulan 2</th>
-                                            <th>Triwulan 3</th>
-                                            <th>Triwulan 4</th>
+                                            <th>TRIWULAN 1</th>
+                                            <th>TRIWULAN 2</th>
+                                            <th>TRIWULAN 3</th>
+                                            <th>TRIWULAN 4</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
@@ -65,7 +65,7 @@
                         <div class="form-group row">
 
                             <div class="form-group col-md-6">
-                                <label>Triwulan 1</label>
+                                <label>TRIWULAN 1</label>
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text" id="basic-addon1">Rp.</span>
@@ -75,7 +75,7 @@
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
-                                <label>Triwulan 2</label>
+                                <label>TRIWULAN 2</label>
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text" id="basic-addon1">Rp.</span>
@@ -85,7 +85,7 @@
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
-                                <label>Triwulan 3</label>
+                                <label>TRIWULAN 3</label>
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text" id="basic-addon1">Rp.</span>
@@ -95,7 +95,7 @@
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
-                                <label>Triwulan 4</label>
+                                <label>TRIWULAN 4</label>
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text" id="basic-addon1">Rp.</span>
@@ -150,6 +150,7 @@
                 processing: true,
                 serverSide: true,
                 searchable: true,
+                responsive: true,
                 ajax: "{{ url()->current() }}",
                 columns: [{
                         data: 'DT_RowIndex',

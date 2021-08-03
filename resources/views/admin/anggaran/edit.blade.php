@@ -1,18 +1,18 @@
 @extends('layouts.app')
 @section('title')
-    Tambah Data Anggaran
+    Edit Data Anggaran
 @endsection
 @section('content')
     <section class="section">
         <div class="section-header">
-            <h3 class="page__heading">Tambah Data Anggaran</h3>
+            <h3 class="page__heading">Edit Data Anggaran</h3>
         </div>
         <div class="section-body">
-            <h2 class="section-title">Tambah Data Anggaran</h2>
+            <h2 class="section-title">Edit Data Anggaran</h2>
             <p class="section-lead">***</p>
             <div class="card">
                 <div class="card-body">
-                    <form class="m-1" action="{{ route('anggaran.store') }}" method="POST">
+                    <form class="m-1" action="{{ route('anggaran.update', [$anggaran->id]) }}" method="POST">
                         @if ($errors->any())
                             @foreach ($errors->all() as $error)
                                 <div class="alert alert-danger">
@@ -21,6 +21,8 @@
                             @endforeach
                         @endif
                         @csrf
+                        @method('PUT')
+
                         {{-- <h5 id="anggaran"></h5> --}}
                         <div class="row">
                             <div class="col-12">
@@ -30,7 +32,7 @@
                                         <div class="form-group">
                                             <label>TAHUN</label>
                                             <input type="number" name="year" class="form-control w-50"
-                                                placeholder="Masukkan Tahun" min=2020 value="2021">
+                                                placeholder="Masukkan Tahun" min=2020 value="{{ $anggaran->year }}">
                                         </div>
                                     </div>
                                 </div>
@@ -42,19 +44,47 @@
                                             <h3 class="text-primary text-center">TRIWULAN {{ $i }}</h3>
                                             <br>
                                             @foreach ($reks as $r)
-                                                @php
-                                                    $randomNum = rand(1000000, 99000000);
-                                                @endphp
+
                                                 <div class="form-group">
                                                     <label>{{ $r->name }}</label>
                                                     <div class="input-group mb-3">
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text">Rp.</span>
                                                         </div>
+                                                        @php
+                                                            $val = '';
+                                                        @endphp
+                                                        @switch($i)
+                                                            @case(1)
+                                                                @php
+                                                                    $val = json_decode($anggaran->triwulan_1)->data;
+                                                                @endphp
+                                                            @break
+                                                            @case(2)
+                                                                @php
+                                                                    $val = json_decode($anggaran->triwulan_2)->data;
+                                                                @endphp
+                                                            @break
+                                                            @case(3)
+                                                                @php
+                                                                    $val = json_decode($anggaran->triwulan_3)->data;
+                                                                @endphp
+                                                            @break
+                                                            @case(4)
+                                                                @php
+                                                                    $val = json_decode($anggaran->triwulan_4)->data;
+                                                                @endphp
+                                                            @break
+                                                            @default
+                                                                @php
+                                                                    $val = json_decode($anggaran->triwulan_1)->data;
+                                                                @endphp
+                                                        @endswitch
+
                                                         <input class="form-control finn rek-{{ $i }}"
                                                             data-rek="{{ $i }}"
                                                             name="triwulan[{{ $i }}][{{ $r->id }}]"
-                                                            value={{ $randomNum }}>
+                                                            value="{{ $val->{$r->id} }}">
                                                     </div>
                                                     <hr>
                                                 </div>
@@ -84,42 +114,42 @@
     </section>
 @endsection
 @section('scripts')
-    <script>
-        $(document).ready(() => {
-            function getTotal(a) {
-                var value = 0;
-                $('.rek-' + a).each(function(i, obj) {
-                    var val = (this).value;
-                    val = val.replace(/[($)\s\._\-]+/g, "");
-                    value += parseInt(val);
-                });
-                $('#total_ang_' + a).html("Rp. " + value.toLocaleString("id-ID"));
-                $('#total_' + a).val(value);
-            }
-            for (var a = 1; a <= 4; a++) {
-                getTotal(a);
-            }
-            $(".finn").on("keyup", function(event) {
-                // When user select text in the document, also abort.
-                var selection = window.getSelection().toString();
-                if (selection !== '') {
-                    return;
-                }
-                // When the arrow keys are pressed, abort.
-                if ($.inArray(event.keyCode, [38, 40, 37, 39]) !== -1) {
-                    return;
-                }
-                var $this = $(this);
-                // Get the value.
-
-                var input = $this.val();
-                var input = input.replace(/[\D\s\._\-]+/g, "");
-                input = input ? parseInt(input, 10) : 0;
-                $this.val(function() {
-                    return (input === 0) ? 0 : input.toLocaleString("id-ID");
-                });
-                getTotal($(this).data('rek'));
+<script>
+    $(document).ready(() => {
+        function getTotal(a) {
+            var value = 0;
+            $('.rek-' + a).each(function(i, obj) {
+                var val = (this).value;
+                val = val.replace(/[($)\s\._\-]+/g, "");
+                value += parseInt(val);
             });
+            $('#total_ang_' + a).html("Rp. " + value.toLocaleString("id-ID"));
+            $('#total_' + a).val(value);
+        }
+        for (var a = 1; a <= 4; a++) {
+            getTotal(a);
+        }
+        $(".finn").on("keyup", function(event) {
+            // When user select text in the document, also abort.
+            var selection = window.getSelection().toString();
+            if (selection !== '') {
+                return;
+            }
+            // When the arrow keys are pressed, abort.
+            if ($.inArray(event.keyCode, [38, 40, 37, 39]) !== -1) {
+                return;
+            }
+            var $this = $(this);
+            // Get the value.
+
+            var input = $this.val();
+            var input = input.replace(/[\D\s\._\-]+/g, "");
+            input = input ? parseInt(input, 10) : 0;
+            $this.val(function() {
+                return (input === 0) ? 0 : input.toLocaleString("id-ID");
+            });
+            getTotal($(this).data('rek'));
         });
-    </script>
+    });
+</script>
 @endsection

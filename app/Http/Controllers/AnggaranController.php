@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Anggaran;
+use App\Models\ChildSubKegiatan;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -22,11 +23,29 @@ class AnggaranController extends Controller
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    $actionBtn = '<button data-act="' . route('anggaran.update', [$row->id]) . '" data-det="' . route('anggaran.show', $row->id) . '"  type="button" class="btn-edit btn btn-icon btn-primary" data-toggle="modal" data-target="#form-modal"><i class="fas fa-edit"></i></button> ';
+                    $actionBtn = "<div style='white-space:nowrap;'>";
+                    $actionBtn .= '<a href="' . route('anggaran.edit', [$row->id]) . '"  class="btn-edit btn btn-icon btn-primary"><i class="fas fa-edit"></i></a> ';
                     $actionBtn .= ' <button data-act="' . route('anggaran.destroy', $row->id) . '"  class="btn-delete btn btn-icon btn-danger"><i class="fas fa-times"></i></button>';
+                    $actionBtn .= "</div>";
                     return $actionBtn;
                 })
-                ->rawColumns(['action'])
+                ->editColumn('triwulan_1', function ($row) {
+                    $val = json_decode($row->triwulan_1);
+                    return "<div style='white-space:nowrap;'> Rp. " . number_format($val->total, 0, '', '.') . "</div>";
+                })
+                ->editColumn('triwulan_2', function ($row) {
+                    $val = json_decode($row->triwulan_2);
+                    return "<div style='white-space:nowrap;'> Rp. " . number_format($val->total, 0, '', '.') . "</div>";
+                })
+                ->editColumn('triwulan_3', function ($row) {
+                    $val = json_decode($row->triwulan_3);
+                    return "<div style='white-space:nowrap;'> Rp. " . number_format($val->total, 0, '', '.') . "</div>";
+                })
+                ->editColumn('triwulan_4', function ($row) {
+                    $val = json_decode($row->triwulan_4);
+                    return "<div style='white-space:nowrap;'> Rp. " . number_format($val->total, 0, '', '.') . "</div>";
+                })
+                ->rawColumns(['action', 'triwulan_1', 'triwulan_2', 'triwulan_3', 'triwulan_4'])
                 ->make(true);
         }
         return view('admin.anggaran.index');
@@ -39,6 +58,8 @@ class AnggaranController extends Controller
      */
     public function create()
     {
+        $reks = ChildSubKegiatan::where('level_sub', 5)->get();
+        return view('admin.anggaran.create', compact('reks'));
     }
 
     /**
@@ -50,18 +71,51 @@ class AnggaranController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
+        // dump($data['triwulan'][1][36]);
         $this->validate($request, [
             'year' => 'required',
-            'triwulan_1' => 'required',
-            'triwulan_2' => 'required',
-            'triwulan_3' => 'required',
-            'triwulan_4' => 'required',
+            'triwulan' => 'required',
         ]);
-        $request['year'] = intval(preg_replace('/[($)\s\._\-]+/', '', $request->year));
-        $request['triwulan_1'] = intval(preg_replace('/[($)\s\._\-]+/', '', $request->triwulan_1));
-        $request['triwulan_2'] = intval(preg_replace('/[($)\s\._\-]+/', '', $request->triwulan_2));
-        $request['triwulan_3'] = intval(preg_replace('/[($)\s\._\-]+/', '', $request->triwulan_3));
-        $request['triwulan_4'] = intval(preg_replace('/[($)\s\._\-]+/', '', $request->triwulan_4));
+        $data['year'] = intval(preg_replace('/[($)\s\._\-]+/', '', $request->year));
+
+        $tri_1 = collect($data['triwulan'][1])->map(function ($item, $key) {
+            $item = intval(preg_replace('/[($)\s\._\-]+/', '', $item));
+            return $item;
+        });
+        $tri_2 = collect($data['triwulan'][2])->map(function ($item, $key) {
+            $item = intval(preg_replace('/[($)\s\._\-]+/', '', $item));
+            return $item;
+        });
+        $tri_3 = collect($data['triwulan'][3])->map(function ($item, $key) {
+            $item = intval(preg_replace('/[($)\s\._\-]+/', '', $item));
+            return $item;
+        });
+        $tri_4 = collect($data['triwulan'][4])->map(function ($item, $key) {
+            $item = intval(preg_replace('/[($)\s\._\-]+/', '', $item));
+            return $item;
+        });
+
+        // dd(json_encode($tri_1));
+        $data['triwulan_1'] = array(
+            'data' => $tri_1,
+            'total' => $data['total'][1]
+        );
+        $data['triwulan_2'] = array(
+            'data' => $tri_2,
+            'total' => $data['total'][2]
+        );
+        $data['triwulan_3'] = array(
+            'data' => $tri_3,
+            'total' => $data['total'][3]
+        );
+        $data['triwulan_4'] = array(
+            'data' => $tri_4,
+            'total' => $data['total'][4]
+        );
+        $data['triwulan_1'] = json_encode($data['triwulan_1']);
+        $data['triwulan_2'] = json_encode($data['triwulan_2']);
+        $data['triwulan_3'] = json_encode($data['triwulan_3']);
+        $data['triwulan_4'] = json_encode($data['triwulan_4']);
 
         $anggaran = Anggaran::create($data);
 
@@ -90,7 +144,8 @@ class AnggaranController extends Controller
      */
     public function edit(Anggaran $anggaran)
     {
-        //
+        $reks = ChildSubKegiatan::where('level_sub', 5)->get();
+        return view('admin.anggaran.edit', compact('reks', 'anggaran'));
     }
 
     /**
@@ -106,17 +161,50 @@ class AnggaranController extends Controller
         $anggaran = Anggaran::find($id);
         $this->validate($request, [
             'year' => 'required',
-            'triwulan_1' => 'required',
-            'triwulan_2' => 'required',
-            'triwulan_3' => 'required',
-            'triwulan_4' => 'required',
+            'triwulan' => 'required',
         ]);
         $request['year'] = intval(preg_replace('/[($)\s\._\-]+/', '', $request->year));
-        $request['triwulan_1'] = intval(preg_replace('/[($)\s\._\-]+/', '', $request->triwulan_1));
-        $request['triwulan_2'] = intval(preg_replace('/[($)\s\._\-]+/', '', $request->triwulan_2));
-        $request['triwulan_3'] = intval(preg_replace('/[($)\s\._\-]+/', '', $request->triwulan_3));
-        $request['triwulan_4'] = intval(preg_replace('/[($)\s\._\-]+/', '', $request->triwulan_4));
+
+        $tri_1 = collect($data['triwulan'][1])->map(function ($item, $key) {
+            $item = intval(preg_replace('/[($)\s\._\-]+/', '', $item));
+            return $item;
+        });
+        $tri_2 = collect($data['triwulan'][2])->map(function ($item, $key) {
+            $item = intval(preg_replace('/[($)\s\._\-]+/', '', $item));
+            return $item;
+        });
+        $tri_3 = collect($data['triwulan'][3])->map(function ($item, $key) {
+            $item = intval(preg_replace('/[($)\s\._\-]+/', '', $item));
+            return $item;
+        });
+        $tri_4 = collect($data['triwulan'][4])->map(function ($item, $key) {
+            $item = intval(preg_replace('/[($)\s\._\-]+/', '', $item));
+            return $item;
+        });
+
+        $data['triwulan_1'] = array(
+            'data' => $tri_1,
+            'total' => $data['total'][1]
+        );
+        $data['triwulan_2'] = array(
+            'data' => $tri_2,
+            'total' => $data['total'][2]
+        );
+        $data['triwulan_3'] = array(
+            'data' => $tri_3,
+            'total' => $data['total'][3]
+        );
+        $data['triwulan_4'] = array(
+            'data' => $tri_4,
+            'total' => $data['total'][4]
+        );
+        $data['triwulan_1'] = json_encode($data['triwulan_1']);
+        $data['triwulan_2'] = json_encode($data['triwulan_2']);
+        $data['triwulan_3'] = json_encode($data['triwulan_3']);
+        $data['triwulan_4'] = json_encode($data['triwulan_4']);
+
         $anggaran->update($data);
+
         $anggaran->save();
         $request->session()->flash('status', 'sukses');
         return redirect()->route('anggaran.index');
