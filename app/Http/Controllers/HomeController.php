@@ -43,19 +43,19 @@ class HomeController extends Controller
                 } elseif (intval($value->triwulan) == 2) {
                     $penyerapan_2 += intval($value->nominal);
                 } elseif (intval($value->triwulan) == 3) {
-                    $penyerapan_2 += intval($value->nominal);
+                    $penyerapan_3 += intval($value->nominal);
                 } elseif (intval($value->triwulan) == 4) {
-                    $penyerapan_2 += intval($value->nominal);
+                    $penyerapan_4 += intval($value->nominal);
                 }
             }
-            $sisa_1 = intval($anggaran->triwulan_1) - $penyerapan_1;
-            $sisa_2 = intval($anggaran->triwulan_2) - $penyerapan_2;
-            $sisa_3 = intval($anggaran->triwulan_3) - $penyerapan_3;
+            $sisa_1 = intval(json_decode($anggaran->triwulan_1)->total) - $penyerapan_1;
+            $sisa_2 = intval(json_decode($anggaran->triwulan_2)->total) - $penyerapan_2;
+            $sisa_3 = intval(json_decode($anggaran->triwulan_3)->total) - $penyerapan_3;
 
-            $total_anggaran_t1 = intval($anggaran->triwulan_1);
-            $total_anggaran_t2 = intval($anggaran->triwulan_2) + $sisa_1;
-            $total_anggaran_t3 = intval($anggaran->triwulan_3) + $sisa_2;
-            $total_anggaran_t4 = intval($anggaran->triwulan_4) + $sisa_3;
+            $total_anggaran_t1 = intval(json_decode($anggaran->triwulan_1)->total);
+            $total_anggaran_t2 = intval(json_decode($anggaran->triwulan_2)->total) + $sisa_1;
+            $total_anggaran_t3 = intval(json_decode($anggaran->triwulan_3)->total) + $sisa_2;
+            $total_anggaran_t4 = intval(json_decode($anggaran->triwulan_4)->total) + $sisa_3;
 
             $data_chart = array(
                 // 'a' => $anggaran->triwulan_1,

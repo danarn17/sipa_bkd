@@ -34,7 +34,7 @@
                         {{-- <div class="card-header">
                             <h4>TRIWULAN 1</h4>
                         </div> --}}
-                        <div class="card-body">
+                        <div class="card-body" style="height: 350px">
                             <canvas id="triwulan_1"></canvas>
                         </div>
                     </div>
@@ -44,7 +44,7 @@
                         {{-- <div class="card-header">
                             <h4>TRIWULAN 2</h4>
                         </div> --}}
-                        <div class="card-body">
+                        <div class="card-body" style="height: 350px">
                             <canvas id="triwulan_2"></canvas>
                         </div>
                     </div>
@@ -54,7 +54,7 @@
                         {{-- <div class="card-header">
                             <h4>TRIWULAN 3</h4>
                         </div> --}}
-                        <div class="card-body">
+                        <div class="card-body" style="height: 350px">
                             <canvas id="triwulan_3"></canvas>
                         </div>
                     </div>
@@ -64,7 +64,7 @@
                         {{-- <div class="card-header">
                             <h4>TRIWULAN 4</h4>
                         </div> --}}
-                        <div class="card-body">
+                        <div class="card-body" style="height: 350px">
                             <canvas id="triwulan_4"></canvas>
                         </div>
                     </div>
@@ -119,6 +119,7 @@
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     legend: {
                         position: 'top',
                     },
@@ -165,6 +166,7 @@
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     legend: {
                         position: 'top',
                     },
@@ -211,6 +213,7 @@
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     legend: {
                         position: 'top',
                     },
@@ -257,6 +260,7 @@
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     legend: {
                         position: 'top',
                     },

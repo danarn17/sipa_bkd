@@ -27,33 +27,12 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label>Rekening</label>
-                                    <select class="custom-select" name="no_rek" required>
-                                        <option value="">Pilih Rekening</option>
-                                        {!! $sel !!}
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
                                     <label>Tahun</label>
                                     <select class="form-control" name="year" required>
                                         @foreach ($years as $year)
                                             <option value="{{ $year->id }}" @if ($pencairan->year == $year->id) selected @endif>{{ $year->year }}</option>)
                                         @endforeach
                                     </select>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label>Nominal</label>
-                                    <div class="input-group mb-3">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="basic-addon1">Rp.</span>
-                                        </div>
-                                        <input class="form-control finn" name="nominal" required
-                                            value="{{ $pencairan->nominal }}">
-                                    </div>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -67,6 +46,29 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Rekening</label>
+                                    <select class="custom-select" name="no_rek" required>
+                                        <option value="">Pilih Rekening</option>
+                                        {!! $sel !!}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Nominal</label>
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1">Rp.</span>
+                                        </div>
+                                        <input class="form-control finn" name="nominal" required
+                                            value="{{ $pencairan->nominal }}">
+                                    </div>
+                                </div>
+                            </div>
+
 
                             <div class="col-sm-6">
                                 <div class="form-group">

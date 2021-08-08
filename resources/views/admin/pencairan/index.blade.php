@@ -22,13 +22,49 @@
                             <h4>Daftar Pencairan</h4>
                             {{-- <button type="button" id="btn-add" class="btn btn-success" data-toggle="modal"
                                 data-target="#form-modal">Tambah</button> --}}
+
                             <a href={{ route('pencairan.create') }} class="btn btn-success">Tambah</a>
                         </div>
                         <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label><strong>Tahun :</strong></label>
+                                        <select name="year" id="year" class="form-control">
+                                            <option value="all">Semua</option>
+                                            @foreach ($years as $year)
+                                                <option value="{{ $year->id }}" @if (now()->year == $year->year) selected @endif>{{ $year->year }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label><strong>Triwulan :</strong></label>
+                                        <select name="triwulan" id="triwulan" class="form-control">
+                                            <option value="all" selected>Semua</option>
+                                            <option value="1">Triwulan 1</option>
+                                            <option value="2">Triwulan 2</option>
+                                            <option value="3">Triwulan 3</option>
+                                            <option value="4">Triwulan 4</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label><strong>Rekening :</strong></label>
+                                        <select class="custom-select" name="reks" id="reks" class="form-control">
+                                            <option value="all" selected>Semua</option>
+                                            {!! $sel !!}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="table-striped ">
                                 <div class="table-responsive">
 
-                                    <table id="dataTable" class="table table-striped    table-md">
+                                    <table id="dataTable" class="table table-striped  dt-responsive  table-md">
                                         <thead>
                                             <tr class="text-center">
                                                 <th>#</th>
@@ -78,21 +114,33 @@
 
     <script>
         $(function() {
+            // console.log($('#year').val());
 
             var table = $('#dataTable').DataTable({
                 processing: true,
                 serverSide: true,
                 searchable: true,
-                ajax: "{{ url()->current() }}",
+                ajax: {
+                    url: '{!! url()->current() !!}',
+                    data: function(d) {
+                        d.year = $('#year').val();
+                        d.triwulan = $('#triwulan').val();
+                        d.reks = $('#reks').val();
+                    },
+
+                },
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
-                        className: 'text-center'
+                        className: 'text-center',
+                        orderable: false,
                     },
                     {
                         data: 'no_rek',
                         name: 'no_rek',
-                        className: 'text-center'
+                        className: 'text-center',
+                        orderable: false,
+
                     },
                     {
                         data: 'triwulan',
@@ -128,6 +176,9 @@
                         className: 'text-center'
                     },
                 ]
+            });
+            $('#year, #triwulan, #reks').change(function() {
+                table.draw();
             });
 
             $("#dataTable").on('click', ".btn-edit", function() {

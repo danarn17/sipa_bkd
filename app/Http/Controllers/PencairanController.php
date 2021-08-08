@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 
+
 class PencairanController extends Controller
 {
     /**
@@ -21,8 +22,8 @@ class PencairanController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = Pencairan::get();
-            return DataTables::of($data)
+            $data = Pencairan::orderBy('created_at', 'desc');
+            return DataTables::eloquent($data)
                 ->addIndexColumn()
                 ->addColumn('no_rek', function ($row) {
                     // $res = 'no_rek ' . $row->no_rek;
@@ -63,19 +64,24 @@ class PencairanController extends Controller
                     $actionBtn .= ' <button data-act="' . route('pencairan.destroy', $row->id) . '"  class="btn-delete btn btn-icon btn-danger"><i class="fas fa-times"></i></button>';
                     return $actionBtn;
                 })
+                ->filter(function ($query) use ($request) {
+                    // $request;
+                    if ($request->has('year') && !is_null($request->get('year')) && $request->get('year') !== 'all') {
+                        $query->where('year',  $request->get('year'));
+                    }
+                    if ($request->has('reks') && !is_null($request->get('reks')) && $request->get('reks') !== 'all') {
+                        $query->where('no_rek',  $request->get('reks'));
+                    }
+                    if ($request->has('triwulan') && !is_null($request->get('triwulan')) && $request->get('triwulan') !== 'all') {
+                        $query->where('triwulan',  $request->get('triwulan'));
+                    }
+                })
                 ->rawColumns(['no_rek', 'action', 'triwulan', 'nominal', 'tgl_kegiatan', 'tgl_pencairan', 'archive'])
                 ->make(true);
         }
-        return view('admin.pencairan.index');
-    }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
+        $years = Anggaran::get();
+
         $reks = ChildSubKegiatan::where('level_sub', 4)->get();
         $sel = "";
         foreach ($reks as $id) {
@@ -83,6 +89,32 @@ class PencairanController extends Controller
             $child = ChildSubKegiatan::where(['level_sub' => 5, 'child_of' => $id->id])->get();
             foreach ($child as $ch) {
                 $a .= "<option value='" . $ch->id . "'>" . $ch->name . "</option>";
+            }
+            $a .= '</optgroup>';
+            $sel .= $a;
+        };
+
+        return view('admin.pencairan.index', compact('years', 'sel'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create(Request $request)
+    {
+        $reks = ChildSubKegiatan::where('level_sub', 4)->get();
+        $sel = "";
+        foreach ($reks as $id) {
+            $a = "<optgroup label='" . $id->name . "'>";
+            $child = ChildSubKegiatan::where(['level_sub' => 5, 'child_of' => $id->id])->get();
+            foreach ($child as $ch) {
+                $stat = "";
+                if ($request->old('no_rek') == $ch->id) {
+                    $stat = "selected";
+                }
+                $a .= "<option value='" . $ch->id . "' " . $stat . ">" . $ch->name . "</option>";
             }
             $a .= '</optgroup>';
             $sel .= $a;
@@ -113,6 +145,8 @@ class PencairanController extends Controller
             'tgl_pencairan' => 'required',
             'archive' => 'mimes:jpeg,bmp,png,gif,svg,pdf|max:1000',
         ]);
+
+
         if ($request->hasFile('archive')) {
             $data['archive'] = $request->file('archive')->store('archive', 'public');
         }
