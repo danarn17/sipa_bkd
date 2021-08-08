@@ -9,6 +9,11 @@
         <i class="fas fa-history"></i><span>Pencairan</span>
     </a>
 </li>
+<li class="side-menus {{ Request::is('penyerapan.*') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('penyerapan.index') }}">
+        <i class="fas fa-credit-card"></i><span>Penyerapan</span>
+    </a>
+</li>
 <li class="side-menus {{ Request::is('subkeg.*') ? 'active' : '' }}">
     <a class="nav-link" href="{{ route('subkeg.index') }}">
         <i class="fas fa-tasks"></i><span>Sub Kegiatan</span>

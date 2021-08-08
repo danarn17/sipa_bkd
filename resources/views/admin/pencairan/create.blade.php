@@ -123,7 +123,6 @@
                                 <i class="fas fa-check-circle"> Simpan</i>
                             </button>
                         </div>
-                        </object>
 
                     </form>
                 </div>
@@ -135,6 +134,18 @@
     <script>
         $(".form-avail").prop("disabled", true);
         $(document).ready(() => {
+            function toLocale(ini) {
+
+                var $this = ini;
+                // Get the value.
+
+                var input = $this.val();
+                var input = input.replace(/[\D\s\._\-]+/g, "");
+                input = input ? parseInt(input, 10) : 0;
+                $this.val(function() {
+                    return (input === 0) ? 0 : input.toLocaleString("id-ID");
+                });
+            }
             $(".finn").on("keyup", function(event) {
                 // When user select text in the document, also abort.
                 var selection = window.getSelection().toString();
@@ -146,15 +157,11 @@
                     return;
                 }
                 var $this = $(this);
-                // Get the value.
-
-                var input = $this.val();
-                var input = input.replace(/[\D\s\._\-]+/g, "");
-                input = input ? parseInt(input, 10) : 0;
-                $this.val(function() {
-                    return (input === 0) ? 0 : input.toLocaleString("id-ID");
-                });
+                toLocale($this);
             });
+
+            toLocale($("input[name='nominal']"));
+
             $('input[type="file"]').change(function() {
                 const preview = $(this).data('preview');
                 const id = $(this).attr('id');

@@ -39,7 +39,8 @@ class PencairanController extends Controller
                 })
                 ->addColumn('nominal', function ($row) {
                     $res = 'Rp. ' . number_format($row->nominal, 0, '', '.');
-                    return $res;
+                    $nominal = "<div style='white-space:nowrap;'>" . $res . "</div>";
+                    return $nominal;
                 })
                 ->addColumn('tgl_kegiatan', function ($row) {
                     $res = '<h5>' . Carbon::parse($row->tgl_kegiatan)->format(' d/m/Y') . '</h5>';
@@ -62,7 +63,9 @@ class PencairanController extends Controller
                     // $actionBtn = '<button data-act="' . route('pencairan.update', $row->id) . '" data-det="' . route('pencairan.show', $row->id) . '"  type="button" class="btn-edit btn btn-icon btn-primary" data-toggle="modal" data-target="#form-modal"><i class="fas fa-edit"></i></button> ';
                     $actionBtn = '<a href="' . route('pencairan.edit', $row->id) . '" class="btn-edit btn btn-icon btn-primary"><i class="fas fa-edit"></i></a> ';
                     $actionBtn .= ' <button data-act="' . route('pencairan.destroy', $row->id) . '"  class="btn-delete btn btn-icon btn-danger"><i class="fas fa-times"></i></button>';
-                    return $actionBtn;
+                    $action = "<div style='white-space:nowrap;'>" . $actionBtn . "</div>";
+
+                    return $action;
                 })
                 ->filter(function ($query) use ($request) {
                     // $request;
@@ -185,11 +188,11 @@ class PencairanController extends Controller
             $a = "<optgroup label='" . $id->name . "'>";
             $child = ChildSubKegiatan::where(['level_sub' => 5, 'child_of' => $id->id])->get();
             foreach ($child as $ch) {
-                $selected = "";
-                if ($ch->id == $pencairan->no_rek) {
-                    $selected = "selected";
+                $stat = "";
+                if ($pencairan->no_rek == $ch->id) {
+                    $stat = "selected";
                 }
-                $a .= "<option value='" . $ch->id . "' " . $selected . ">" . $ch->name . "</option>";
+                $a .= "<option value='" . $ch->id . "' " . $stat . ">" . $ch->name . "</option>";
             }
             $a .= '</optgroup>';
             $sel .= $a;

@@ -30,7 +30,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label><strong>Tahun :</strong></label>
-                                        <select name="year" id="year" class="form-control">
+                                        <select name="year" id="year" class="custom-select form-control">
                                             <option value="all">Semua</option>
                                             @foreach ($years as $year)
                                                 <option value="{{ $year->id }}" @if (now()->year == $year->year) selected @endif>{{ $year->year }}</option>
@@ -41,7 +41,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label><strong>Triwulan :</strong></label>
-                                        <select name="triwulan" id="triwulan" class="form-control">
+                                        <select name="triwulan" id="triwulan" class="custom-select form-control">
                                             <option value="all" selected>Semua</option>
                                             <option value="1">Triwulan 1</option>
                                             <option value="2">Triwulan 2</option>
@@ -53,7 +53,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label><strong>Rekening :</strong></label>
-                                        <select class="custom-select" name="reks" id="reks" class="form-control">
+                                        <select class="custom-select form-control" name="reks" id="reks">
                                             <option value="all" selected>Semua</option>
                                             {!! $sel !!}
                                         </select>
@@ -181,46 +181,6 @@
                 table.draw();
             });
 
-            $("#dataTable").on('click', ".btn-edit", function() {
-                $('.modal-title').html('Edit Anggaran')
-                $('.modal-footer button[type=submit]').html('Simpan')
-                var url = $(this).data('act');
-                $('.modal form').attr('action', url)
-                var det = $(this).data('det');
-                $.ajax({
-                    url: det,
-                    cache: true,
-                    method: 'GET',
-                    datatype: 'JSON',
-                    success: function(data) {
-                        var data = data.data
-                        $('input[name = year]').val(data.year)
-                        $('input[name = triwulan_1]').val(data.triwulan_1)
-                        $('input[name = triwulan_2]').val(data.triwulan_2)
-                        $('input[name = triwulan_3]').val(data.triwulan_3)
-                        $('input[name = triwulan_4]').val(data.triwulan_4)
-
-                        $('input[name = _method]').val('PUT')
-
-                    }
-                });
-
-            })
-
-            $('#btn-add').click(function() {
-                $('.modal-title').html('Tambah Anggaran')
-                $('.modal-footer button[type=submit]').html('Tambah')
-                $('.modal form').attr('action', "{{ route('pencairan.store') }}")
-                $('.modal form').attr('method', 'post')
-
-                $('input[name = year]').val('')
-                $('input[name = triwulan_1]').val('')
-                $('input[name = triwulan_2]').val('')
-                $('input[name = triwulan_3]').val('')
-                $('input[name = triwulan_4]').val('')
-                $('input[name = _method]').val('')
-
-            })
 
             // Hapus data via ajax
             $(document).on('click', '.btn-delete', function(e) {

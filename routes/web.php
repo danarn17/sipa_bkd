@@ -38,5 +38,6 @@ Route::group(
         Route::resource('/rekening', App\Http\Controllers\RekeningController::class);
         Route::resource('/anggaran', App\Http\Controllers\AnggaranController::class);
         Route::resource('/pencairan', App\Http\Controllers\PencairanController::class);
+        Route::resource('/penyerapan', App\Http\Controllers\PenyerapanController::class);
     }
 );
