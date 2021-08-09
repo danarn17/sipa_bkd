@@ -52,9 +52,9 @@ class HomeController extends Controller
                 if ($a == 2) {
                     $sisa_rek_total = ($total[1] + $totalByTri) - $penyerapanByTri;
                 } else if ($a == 3) {
-                    $sisa_rek_total = ($total[1] + $total[2] + $totalByTri) - $penyerapanByTri;
+                    $sisa_rek_total = ($total[2] + $totalByTri) - $penyerapanByTri;
                 } else if ($a == 4) {
-                    $sisa_rek_total = ($total[1] + $total[2] + $total[3] + $totalByTri) - $penyerapanByTri;
+                    $sisa_rek_total = ($total[3] + $totalByTri) - $penyerapanByTri;
                 }
                 $total[$a] = $sisa_rek_total;
                 $penyerapan[$a] = $penyerapanByTri;

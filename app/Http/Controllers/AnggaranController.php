@@ -163,9 +163,9 @@ class AnggaranController extends Controller
                 if ($a == 2) {
                     $sisa_rek = ($penyerapan[1][$r] + $pertri->{$r}) - $rek;
                 } else if ($a == 3) {
-                    $sisa_rek = ($penyerapan[1][$r] + $penyerapan[2][$r] + $pertri->{$r}) - $rek;
+                    $sisa_rek = ($penyerapan[2][$r] + $pertri->{$r}) - $rek;
                 } else if ($a == 4) {
-                    $sisa_rek = ($penyerapan[1][$r] + $penyerapan[2][$r] + $penyerapan[3][$r] + $pertri->{$r}) - $rek;
+                    $sisa_rek = ($penyerapan[3][$r] + $pertri->{$r}) - $rek;
                 }
 
                 $triwulan[$r] = $sisa_rek;
@@ -187,9 +187,9 @@ class AnggaranController extends Controller
             if ($a == 2) {
                 $sisa_rek_total = ($sisa_total[1] + $totalByTri) - $penyerapanByTri;
             } else if ($a == 3) {
-                $sisa_rek_total = ($sisa_total[1] + $sisa_total[2] + $totalByTri) - $penyerapanByTri;
+                $sisa_rek_total = ($sisa_total[2] + $totalByTri) - $penyerapanByTri;
             } else if ($a == 4) {
-                $sisa_rek_total = ($sisa_total[1] + $sisa_total[2] + $sisa_total[3] + $totalByTri) - $penyerapanByTri;
+                $sisa_rek_total = ($sisa_total[3] + $totalByTri) - $penyerapanByTri;
             }
             $total[$a] = $sisa_rek_total;
             $sisa_total[$a] = $sisa_rek_total;

@@ -65,9 +65,9 @@ class PenyerapanController extends Controller
                 if ($a == 2) {
                     $sisa_rek = ($total[1] + $pertri->{$r}) - $rek;
                 } else if ($a == 3) {
-                    $sisa_rek = ($total[1] + $total[2] + $pertri->{$r}) - $rek;
+                    $sisa_rek = ($total[2] + $pertri->{$r}) - $rek;
                 } else if ($a == 4) {
-                    $sisa_rek = ($total[1] + $total[2] + $total[3] + $pertri->{$r}) - $rek;
+                    $sisa_rek = ($total[3] + $pertri->{$r}) - $rek;
                 }
 
                 // $triwulan[$r] = $sisa_rek;
