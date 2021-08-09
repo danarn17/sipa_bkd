@@ -1,12 +1,12 @@
 @extends('layouts.app')
 @section('title')
-    Dashboard Pencairan
+    PENYERAPAN REKENING
 @endsection
 
 @section('content')
     <section class="section">
         <div class="section-header">
-            <h3 class="page__heading">DASHBOARD</h3>
+            <h3 class="page__heading">PENYERAPAN</h3>
         </div>
         <div class="section-body">
             <div class="row">
@@ -19,8 +19,8 @@
                             <div class="form-group">
                                 <select class="form-control" id="filterTahun" required>
                                     @foreach ($years as $year)
-
-                                        <option value="{{ $year->year }}">{{ $year->year }}</option>
+                                        <option value="{{ $year->year }}" @if (date('Y') == $year->year) selected @endif>
+                                            {{ $year->year }}</option>
                                     @endforeach
 
                                 </select>
@@ -37,7 +37,7 @@
                         <div class="card-body">
                             <div class="form-group">
                                 <select class="form-control custom-select" id="filterRekening" required>
-                                    <option value="">Pilih Rekening</option>
+                                    {{-- <option value="">Pilih Rekening</option> --}}
                                     {!! $sel !!}
                                 </select>
                             </div>
@@ -94,20 +94,25 @@
 
     <script>
         $(document).ready(function() {
-            var year = $("#filterTahun").val();
+
             $("#filterTahun").change(function() {
-                var val = this.value;
-                ajax_chart(val);
+                ajax_chart();
             });
-            ajax_chart(year);
+            $("#filterRekening").change(function() {
+                ajax_chart();
+            });
+            ajax_chart();
         });
 
-        function ajax_chart(tahun) {
+        function ajax_chart() {
+            const year = $("#filterTahun").val();
+            const rek = $("#filterRekening").val();
             $.ajax({
                 url: '{{ url()->current() }}',
                 type: 'GET',
                 data: {
-                    tahun: tahun
+                    tahun: year,
+                    rekening: rek
                 },
                 success: function(data) {
                     // console.log(JSON.parse(data));

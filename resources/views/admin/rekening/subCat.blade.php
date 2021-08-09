@@ -3,8 +3,12 @@
         <span>
             <div class="row">
                 <div class="col-9">
-
-                    {{ $subcategory->name }}
+                    @if ($subcategory->level_sub !== 5)
+                        {{ $subcategory->name }}
+                    @else
+                        <a
+                            href="{{ route('penyerapan.index', ['rekening' => $subcategory->id]) }}">{{ $subcategory->name }}</a>
+                    @endif
                     <b>(</b>{{ $no_parent }}<b>{{ $subcategory->no_rek_sub }})</b>
                 </div>
                 <div class="col-3">

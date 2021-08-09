@@ -22,8 +22,10 @@
                             <h4>Daftar Pencairan</h4>
                             {{-- <button type="button" id="btn-add" class="btn btn-success" data-toggle="modal"
                                 data-target="#form-modal">Tambah</button> --}}
-
+                            @hasanyrole('webmaster|admin')
                             <a href={{ route('pencairan.create') }} class="btn btn-success">Tambah</a>
+                            @endhasanyrole
+
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -73,8 +75,10 @@
                                                 <th>Nominal</th>
                                                 <th>Tgl. Kegiatan</th>
                                                 <th>Tgl. Pencairan</th>
-                                                <th>Downlad</th>
+                                                <th>Download</th>
+                                                @hasanyrole('webmaster|admin')
                                                 <th>Aksi</th>
+                                                @endhasanyrole
                                             </tr>
                                         </thead>
                                     </table>
@@ -111,11 +115,9 @@
             })
         </script>
     @endif
-
+    @hasanyrole('webmaster|admin')
     <script>
         $(function() {
-            // console.log($('#year').val());
-
             var table = $('#dataTable').DataTable({
                 processing: true,
                 serverSide: true,
@@ -168,6 +170,7 @@
                         name: 'archive',
                         className: 'text-center'
                     },
+
                     {
                         data: 'action',
                         name: 'action',
@@ -177,6 +180,75 @@
                     },
                 ]
             });
+        })
+    </script>
+@else
+    <script>
+        $(function() {
+            var table = $('#dataTable').DataTable({
+                processing: true,
+                serverSide: true,
+                searchable: true,
+                ajax: {
+                    url: '{!! url()->current() !!}',
+                    data: function(d) {
+                        d.year = $('#year').val();
+                        d.triwulan = $('#triwulan').val();
+                        d.reks = $('#reks').val();
+                    },
+
+                },
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
+                        className: 'text-center',
+                        orderable: false,
+                    },
+                    {
+                        data: 'no_rek',
+                        name: 'no_rek',
+                        className: 'text-center',
+                        orderable: false,
+
+                    },
+                    {
+                        data: 'triwulan',
+                        name: 'triwulan',
+                        className: 'text-center'
+                    },
+                    {
+                        data: 'nominal',
+                        name: 'nominal',
+                        className: 'text-center'
+
+                    },
+                    {
+                        data: 'tgl_kegiatan',
+                        name: 'tgl_kegiatan',
+                        className: 'text-center'
+                    },
+                    {
+                        data: 'tgl_pencairan',
+                        name: 'tgl_pencairan',
+                        className: 'text-center'
+                    },
+                    {
+                        data: 'archive',
+                        name: 'archive',
+                        className: 'text-center'
+                    },
+
+
+                ]
+            });
+        })
+    </script>
+    @endhasanyrole
+    <script>
+        $(function() {
+            // console.log($('#year').val());
+
+
             $('#year, #triwulan, #reks').change(function() {
                 table.draw();
             });

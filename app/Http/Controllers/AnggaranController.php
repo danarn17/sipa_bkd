@@ -135,29 +135,14 @@ class AnggaranController extends Controller
     {
         $anggaran = Anggaran::find($id);
 
-        $anggaran['sisa_t1'] = array(
-            'data' => array(),
-            'total' => 0
-        );
-        $anggaran['sisa_t2'] = array(
-            'data' => array(),
-            'total' => 0
-        );
-        $anggaran['sisa_t3'] = array(
-            'data' => array(),
-            'total' => 0
-        );
-        $anggaran['sisa_t4'] = array(
-            'data' => array(),
-            'total' => 0
-        );
-
         // $anggaran
         $reks = ChildSubKegiatan::where('level_sub', 5)->pluck('id');
-        $as = array();
+        // $as = array();
         $penyerapan = array();
+        $sisa_total = array();
         for ($a = 1; $a <= 4; $a++) {
             // RUMUSNYA ADALAH ANGGARAN REKENING + SISA REKENING TRIWULAN SEBELUMNYA
+            // PER REKENING
             $triw = "triwulan_" . $a;
             $pertri = json_decode($anggaran[$triw])->data;
             $triwulan = array();
@@ -186,39 +171,34 @@ class AnggaranController extends Controller
                 $triwulan[$r] = $sisa_rek;
             }
             $penyerapan[$a] = $triwulan;
-            $as[$a] = $pertri;
-        }
+            // $as[$a] = $pertri;
 
+            // TOTAL DOANG
+            $totalByTri = intval(json_decode($anggaran[$triw])->total);
 
-
-
-
-
-
-
-        $penyerapan_1 = 0;
-        $penyerapan_2 = 0;
-        $penyerapan_3 = 0;
-        $penyerapan_4 = 0;
-        foreach ($pencairan as $key => $value) {
-            if (intval($value->triwulan) == 1) {
-                $penyerapan_1 += intval($value->nominal);
-            } elseif (intval($value->triwulan) == 2) {
-                $penyerapan_2 += intval($value->nominal);
-            } elseif (intval($value->triwulan) == 3) {
-                $penyerapan_3 += intval($value->nominal);
-            } elseif (intval($value->triwulan) == 4) {
-                $penyerapan_4 += intval($value->nominal);
+            $pencairan_byTotal = Pencairan::where(['year' => $anggaran->id, 'triwulan' => $a])->get();
+            $penyerapanByTri = 0;
+            if ($pencairan_byTotal->count() > 0) {
+                foreach ($pencairan_byTotal as $p) {
+                    $penyerapanByTri += $p->nominal;
+                }
             }
+            $sisa_rek_total = $totalByTri - $penyerapanByTri;
+            if ($a == 2) {
+                $sisa_rek_total = ($sisa_total[1] + $totalByTri) - $penyerapanByTri;
+            } else if ($a == 3) {
+                $sisa_rek_total = ($sisa_total[1] + $sisa_total[2] + $totalByTri) - $penyerapanByTri;
+            } else if ($a == 4) {
+                $sisa_rek_total = ($sisa_total[1] + $sisa_total[2] + $sisa_total[3] + $totalByTri) - $penyerapanByTri;
+            }
+            $total[$a] = $sisa_rek_total;
+            $sisa_total[$a] = $sisa_rek_total;
         }
-        $sisa_1 = intval(json_decode($anggaran->triwulan_1)->total) - $penyerapan_1;
-        $sisa_2 = intval(json_decode($anggaran->triwulan_2)->total) - $penyerapan_2;
-        $sisa_3 = intval(json_decode($anggaran->triwulan_3)->total) - $penyerapan_3;
 
-        $anggaran['sisa_t1'] = intval(json_decode($anggaran->triwulan_1)->total) - $penyerapan_1;
-        $anggaran['sisa_t2'] = intval(json_decode($anggaran->triwulan_2)->total) + $anggaran['sisa_t1'] - $penyerapan_2;
-        $anggaran['sisa_t3'] = intval(json_decode($anggaran->triwulan_3)->total) +  $anggaran['sisa_t2'] - $penyerapan_3;
-        $anggaran['sisa_t4'] = intval(json_decode($anggaran->triwulan_4)->total) +  $anggaran['sisa_t3'] - $penyerapan_4;
+        $anggaran['sisa_t1'] = $sisa_total[1];
+        $anggaran['sisa_t2'] = $sisa_total[2];
+        $anggaran['sisa_t3'] = $sisa_total[3];
+        $anggaran['sisa_t4'] = $sisa_total[4];
 
         $anggaran['sis_t1'] = $penyerapan[1];
         $anggaran['sis_t2'] = $penyerapan[2];

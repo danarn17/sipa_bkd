@@ -42,9 +42,9 @@
                                             <h3 class="text-primary text-center">TRIWULAN {{ $i }}</h3>
                                             <br>
                                             @foreach ($reks as $r)
-                                                @php
+                                                {{-- @php
                                                     $randomNum = rand(1000000, 99000000);
-                                                @endphp
+                                                @endphp --}}
                                                 <div class="form-group">
                                                     <label>{{ $r->name }}</label>
                                                     <div class="input-group mb-3">
@@ -54,7 +54,7 @@
                                                         <input class="form-control finn rek-{{ $i }}"
                                                             data-rek="{{ $i }}"
                                                             name="triwulan[{{ $i }}][{{ $r->id }}]"
-                                                            value={{ $randomNum }}>
+                                                            value=0>
                                                     </div>
                                                     <hr>
                                                 </div>
