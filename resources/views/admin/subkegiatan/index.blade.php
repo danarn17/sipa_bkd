@@ -138,7 +138,7 @@
                 var det = $(this).data('det');
                 $.ajax({
                     url: det,
-                    cache: true,
+                    cache: false,
                     method: 'GET',
                     datatype: 'JSON',
                     success: function(data) {

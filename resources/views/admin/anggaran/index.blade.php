@@ -25,8 +25,8 @@
                             <a href={{ route('anggaran.create') }} class="btn btn-success">Tambah</a>
                         </div>
                         <div class="card-body">
-                            <div class="table-striped ">
-                                <table id="dataTable" class="table table-striped dt-responsive table-md">
+                            <div class="table-responsive ">
+                                <table id="dataTable" class="table table-striped dt-responsive">
                                     <thead>
                                         <tr class="text-center">
                                             <th>#</th>
@@ -195,7 +195,7 @@
                 var det = $(this).data('det');
                 $.ajax({
                     url: det,
-                    cache: true,
+                    cache: false,
                     method: 'GET',
                     datatype: 'JSON',
                     success: function(data) {
@@ -235,7 +235,7 @@
 
                 swal({
                         title: "Yakin hapus Anggaran ?",
-                        text: 'Seluruh sub dalam Anggaran ini akan ikut terhapus!',
+                        text: 'Seluruh data terkait anggaran ini akan ikut terhapus!',
                         icon: "warning",
                         buttons: true,
                         dangerMode: true,

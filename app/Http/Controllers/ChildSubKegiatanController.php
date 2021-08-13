@@ -10,6 +10,7 @@ use Yajra\DataTables\Facades\DataTables;
 
 class ChildSubKegiatanController extends Controller
 {
+    // sebagian lupa mana yg dipake mana yg enggak hehehe
     /**
      * Display a listing of the resource.
      *

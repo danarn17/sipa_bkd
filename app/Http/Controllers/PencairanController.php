@@ -27,9 +27,13 @@ class PencairanController extends Controller
                 ->addIndexColumn()
                 ->addColumn('no_rek', function ($row) {
                     // $res = 'no_rek ' . $row->no_rek;
-                    $res = ChildSubKegiatan::where('id', $row->no_rek)->first();
+                    $res = ChildSubKegiatan::where('id', $row->no_rek)->withTrashed()->first();
+                    $nm = $res->name;
+                    if ($res->trashed()) {
+                        $nm .= '<br><i class="text-danger">Rekening Terhapus</i>';
+                    }
 
-                    return $res->name;
+                    return $nm;
                 })
                 ->addColumn('triwulan', function ($row) {
                     $tahun = Anggaran::where('id', $row->year)->first();
@@ -252,7 +256,7 @@ class PencairanController extends Controller
     }
     public function download($file)
     {
-        dd($file);
+        // dd($file);
         return response()->download($file);
     }
 }

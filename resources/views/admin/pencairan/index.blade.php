@@ -66,7 +66,7 @@
                             <div class="table-striped ">
                                 <div class="table-responsive">
 
-                                    <table id="dataTable" class="table table-striped  dt-responsive  table-md">
+                                    <table id="dataTable" class="table table-striped  dt-responsive ">
                                         <thead>
                                             <tr class="text-center">
                                                 <th>#</th>
@@ -246,13 +246,9 @@
     @endhasanyrole
     <script>
         $(function() {
-            // console.log($('#year').val());
-
-
             $('#year, #triwulan, #reks').change(function() {
                 table.draw();
             });
-
 
             // Hapus data via ajax
             $(document).on('click', '.btn-delete', function(e) {
@@ -260,8 +256,8 @@
                 var url = $(this).data('act');
 
                 swal({
-                        title: "Yakin hapus Anggaran ?",
-                        text: 'Seluruh sub dalam Anggaran ini akan ikut terhapus!',
+                        title: "Yakin hapus data Pencairan ?",
+                        text: '',
                         icon: "warning",
                         buttons: true,
                         dangerMode: true,

@@ -16,7 +16,7 @@
 </li>
 @hasanyrole('webmaster|admin')
 <li class="menu-header">Data</li>
-<li class="side-menus {{ Route::is('anggaran') ? 'active' : '' }}">
+<li class="side-menus {{ Route::is('anggaran.*') ? 'active' : '' }}">
     <a class="nav-link" href="{{ route('anggaran.index') }}">
         <i class=" fas fa-dollar-sign"></i><span>Anggaran</span>
     </a>
@@ -26,14 +26,9 @@
         <i class="fas fa-tasks"></i><span>Sub Kegiatan</span>
     </a>
 </li>
-<li class="side-menus {{ Route::is('rekening') ? 'active' : '' }}">
+<li class="side-menus {{ Route::is('rekening.*') ? 'active' : '' }}">
     <a class="nav-link" href="{{ route('rekening.index') }}">
         <i class="fas fa-money-bill"></i><span>Rekening</span>
     </a>
 </li>
 @endhasanyrole
-{{-- <li class="side-menus {{ Request::is('childsubkegiatan') ? 'active' : '' }}">
-    <a class="nav-link" href="{{ route('childsubkegiatan.index') }}">
-        <i class=" fas fa-egg"></i><span>Sub Sub Kegiatan</span>
-    </a>
-</li> --}}

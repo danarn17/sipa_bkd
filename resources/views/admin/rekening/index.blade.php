@@ -148,10 +148,17 @@
             $(".minChild").on('click', function(e) {
                 var id = $(this).data('id');
                 var level = $(this).data('level');
+                var title_t = "Yakin hapus kategori ini ?";
+                var text_t = "Seluruh rekening dibawah kategori ini akan ikut terhapus!";
+                if (level == 5) {
+                    title_t = "Yakin hapus rekening ini ?";
+                    text_t = "Seluruh data dibawah rekening ini akan ikut terhapus!";
+
+                }
 
                 swal({
-                        title: "Yakin hapus Sub Sub Kegiatan ?",
-                        text: 'Seluruh sub dalam Sub sub kegiatan ini akan ikut terhapus!',
+                        title: title_t,
+                        text: text_t,
                         icon: "warning",
                         buttons: true,
                         dangerMode: true,
