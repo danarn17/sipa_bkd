@@ -117,8 +117,8 @@
     @endif
     @hasanyrole('webmaster|admin')
     <script>
-        $(function() {
-            var table = $('#dataTable').DataTable({
+        {{-- $(document).ready(function() { --}}
+            const table = $('#dataTable').DataTable({
                 processing: true,
                 serverSide: true,
                 searchable: true,
@@ -180,12 +180,12 @@
                     },
                 ]
             });
-        })
+        {{-- }) --}}
     </script>
 @else
     <script>
-        $(function() {
-            var table = $('#dataTable').DataTable({
+        {{-- $(document).ready(function() { --}}
+            const table = $('#dataTable').DataTable({
                 processing: true,
                 serverSide: true,
                 searchable: true,
@@ -241,11 +241,11 @@
 
                 ]
             });
-        })
+        {{-- }) --}}
     </script>
     @endhasanyrole
     <script>
-        $(function() {
+    $(document).ready(function() {
             $('#year, #triwulan, #reks').change(function() {
                 table.draw();
             });
