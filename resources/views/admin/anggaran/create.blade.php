@@ -51,7 +51,7 @@
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text">Rp.</span>
                                                         </div>
-                                                        <input class="form-control finn rek-{{ $i }}"
+                                                        <input type="text" class="form-control finn rek-{{ $i }}"
                                                             data-rek="{{ $i }}"
                                                             name="triwulan[{{ $i }}][{{ $r->id }}]"
                                                             value=0>

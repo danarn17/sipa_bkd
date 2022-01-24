@@ -3,7 +3,7 @@
         <span>
             <div class="row">
                 <div class="col-9">
-                    @if ($subcategory->level_sub !== 5)
+                    @if (intval($subcategory->level_sub) !== 5)
                         {{ $subcategory->name }}
                     @else
                         <a
@@ -12,7 +12,7 @@
                     <b>(</b>{{ $no_parent }}<b>{{ $subcategory->no_rek_sub }})</b>
                 </div>
                 <div class="col-3">
-                    @if ($subcategory->level_sub !== 5)
+                    @if (intval($subcategory->level_sub) !== 5)
                         <button class="addChild btn btn-primary float-right" data-toggle="modal"
                             data-level={{ $subcategory->level_sub }} data-parent={{ $subcategory->id }}
                             data-rek="{{ $no_parent . $subcategory->no_rek_sub }}" data-target="#tambahChild"> <i

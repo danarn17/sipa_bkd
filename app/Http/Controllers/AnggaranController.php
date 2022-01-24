@@ -59,7 +59,7 @@ class AnggaranController extends Controller
      */
     public function create()
     {
-        $reks = ChildSubKegiatan::where('level_sub', 5)->get();
+        $reks = ChildSubKegiatan::with('parent')->where('level_sub', 5)->get();
         return view('admin.anggaran.create', compact('reks'));
     }
 
