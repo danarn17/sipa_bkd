@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Anggaran;
 use App\Models\ChildSubKegiatan;
 use App\Models\Pencairan;
+use App\Models\SubKegiatan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Yajra\DataTables\Facades\DataTables;
 
 
@@ -59,8 +61,35 @@ class AnggaranController extends Controller
      */
     public function create()
     {
-        $reks = ChildSubKegiatan::with('parent')->where('level_sub', 5)->get();
-        return view('admin.anggaran.create', compact('reks'));
+        $subkeg = SubKegiatan::with('lastChild')->get()->map(function ($value) {
+            $last = $value->lastChild->toArray();
+            // $value->flatten_child = $this->flattenArr($last);
+            $value->filtered = array_filter($this->flattenArr($last), function ($val) {
+                return $val['level_sub'] == 5;
+            });
+            return $value;
+        });
+
+        // echo json_encode($str);
+        // die();
+
+        // $reks = ChildSubKegiatan::with('rootParent')->where('level_sub', 5)->get();
+        return view('admin.anggaran.create', compact('subkeg'));
+    }
+    public function flattenArr(array $array)
+    {
+        $branch = [];
+
+        foreach ($array as $item) {
+            $children = [];
+            if (isset($item['childd']) && is_array($item['childd'])) {
+                $children = $this->flattenArr($item['childd']);
+                unset($item['childd']);
+            }
+            $branch = array_merge($branch, [$item], $children);
+        }
+
+        return $branch;
     }
 
     /**

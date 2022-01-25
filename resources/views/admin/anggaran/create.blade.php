@@ -41,24 +41,37 @@
                                         <div class="card-body">
                                             <h3 class="text-primary text-center">TRIWULAN {{ $i }}</h3>
                                             <br>
-                                            @foreach ($reks as $r)
-                                                {{-- @php
+                                            <ol type="1">
+                                                @foreach ($subkeg as $sk)
+                                                    <li>
+                                                        <h6>{{ $sk->name }}</h6>
+                                                        @foreach ($sk->filtered as $r)
+                                                            <div class="form-group">
+                                                                <label>{{ $r['name'] }}</label>
+                                                                <div class="input-group mb-3">
+                                                                    <div class="input-group-prepend">
+                                                                        <span class="input-group-text">Rp.</span>
+                                                                    </div>
+                                                                    <input type="text"
+                                                                        class="form-control finn rek-{{ $i }}"
+                                                                        data-rek="{{ $i }}"
+                                                                        name="triwulan[{{ $i }}][{{ $r['id'] }}]"
+                                                                        value=0>
+                                                                </div>
+                                                                <hr>
+                                                            </div>
+                                                        @endforeach
+                                                    </li>
+                                                @endforeach
+                                            </ol>
+
+
+                                            {{-- @foreach ($reks as $r) --}}
+                                            {{-- @php
                                                     $randomNum = rand(1000000, 99000000);
                                                 @endphp --}}
-                                                <div class="form-group">
-                                                    <label>{{ $r->name }}</label>
-                                                    <div class="input-group mb-3">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text">Rp.</span>
-                                                        </div>
-                                                        <input type="text" class="form-control finn rek-{{ $i }}"
-                                                            data-rek="{{ $i }}"
-                                                            name="triwulan[{{ $i }}][{{ $r->id }}]"
-                                                            value=0>
-                                                    </div>
-                                                    <hr>
-                                                </div>
-                                            @endforeach
+
+                                            {{-- @endforeach --}}
                                             <div class="text-center">
                                                 <h5>Total Anggaran</h5>
                                                 <input type="hidden" id="total_{{ $i }}"

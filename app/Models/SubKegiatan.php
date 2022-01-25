@@ -20,4 +20,8 @@ class SubKegiatan extends Model
     {
         return $this->belongsTo("App\Models\ChildSubKegiatan", 'child_of');
     }
+    public function lastChild()
+    {
+        return $this->child()->with('childd');
+    }
 }
