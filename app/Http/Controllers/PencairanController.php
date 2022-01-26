@@ -27,7 +27,24 @@ class PencairanController extends Controller
                 ->addIndexColumn()
                 ->addColumn('no_rek', function ($row) {
                     // $res = 'no_rek ' . $row->no_rek;
-                    $res = ChildSubKegiatan::where('id', $row->no_rek)->withTrashed()->first();
+                    $res = ChildSubKegiatan::with('rootParent')->where('id', $row->no_rek)->withTrashed()->first();
+                    if (isset($res->rootParent)) {
+                        $last = $res->rootParent->toArray();
+                        $res->ss = array_reverse($this->flattenParent($last));
+                        $no_rekk = "";
+                        foreach ($res->ss as $value) {
+                            $no_rekk .= $value['no_rek_sub'];
+                        }
+                        // $no_rekk .= $res->no_rek;
+                        $res->all_no_rek = $no_rekk;
+                        $res->filtered = array_values(array_filter($this->flattenParent($last), function ($val) {
+                            return $val['level_sub'] == 1;
+                        }));
+                        unset($res->rootParent);
+                    }
+
+
+                    // $nm = json_encode($res->all_no_rek);
                     $nm = $res->name;
                     if ($res->trashed()) {
                         $nm .= '<br><i class="text-danger">Rekening Terhapus</i>';
@@ -89,17 +106,24 @@ class PencairanController extends Controller
 
         $years = Anggaran::get();
 
-        $reks = ChildSubKegiatan::where('level_sub', 4)->get();
+        $subkeg = SubKegiatan::with('lastChild')->get()->map(function ($value) {
+            $last = $value->lastChild->toArray();
+            // $value->flatten_child = $this->flattenArr($last);
+            $value->filtered = array_filter($this->flattenArr($last), function ($val) {
+                return $val['level_sub'] == 5;
+            });
+            return $value;
+        });
+
         $sel = "";
-        foreach ($reks as $id) {
-            $a = "<optgroup label='" . $id->name . "'>";
-            $child = ChildSubKegiatan::where(['level_sub' => 5, 'child_of' => $id->id])->get();
-            foreach ($child as $ch) {
-                $a .= "<option value='" . $ch->id . "'>" . $ch->name . "</option>";
+        foreach ($subkeg as $sk) {
+            $a = "<optgroup label='" . $sk['name'] . "'>";
+            foreach ($sk->filtered as $rek) {
+                $a .= "<option value='" . $rek['id'] . "' >" . $rek['name'] . "</option>";
             }
             $a .= '</optgroup>';
             $sel .= $a;
-        };
+        }
 
         return view('admin.pencairan.index', compact('years', 'sel'));
     }
@@ -111,21 +135,47 @@ class PencairanController extends Controller
      */
     public function create(Request $request)
     {
-        $reks = ChildSubKegiatan::where('level_sub', 4)->get();
+        // $reks = ChildSubKegiatan::where('level_sub', 4)->get();
+
+        $subkeg = SubKegiatan::with('lastChild')->get()->map(function ($value) {
+            $last = $value->lastChild->toArray();
+            // $value->flatten_child = $this->flattenArr($last);
+            $value->filtered = array_filter($this->flattenArr($last), function ($val) {
+                return $val['level_sub'] == 5;
+            });
+            return $value;
+        });
+
         $sel = "";
-        foreach ($reks as $id) {
-            $a = "<optgroup label='" . $id->name . "'>";
-            $child = ChildSubKegiatan::where(['level_sub' => 5, 'child_of' => $id->id])->get();
-            foreach ($child as $ch) {
-                $stat = "";
-                if ($request->old('no_rek') == $ch->id) {
-                    $stat = "selected";
+        foreach ($subkeg as $sk) {
+            $a = "<optgroup label='" . $sk['name'] . "'>";
+            foreach ($sk->filtered as $rek) {
+                $selected = "";
+                if ($request->old('no_rek') == $rek['id']) {
+                    $selected = "selected";
                 }
-                $a .= "<option value='" . $ch->id . "' " . $stat . ">" . $ch->name . "</option>";
+                $a .= "<option value='" . $rek['id'] . "' " . $selected . ">" . $rek['name'] . "</option>";
             }
             $a .= '</optgroup>';
             $sel .= $a;
-        };
+        }
+
+
+
+
+        // foreach ($reks as $id) {
+        //     $a = "<optgroup label='" . $id->name . "'>";
+        //     $child = ChildSubKegiatan::where(['level_sub' => 5, 'child_of' => $id->id])->get();
+        //     foreach ($child as $ch) {
+        //         $stat = "";
+        //         if ($request->old('no_rek') == $ch->id) {
+        //             $stat = "selected";
+        //         }
+        //         $a .= "<option value='" . $ch->id . "' " . $stat . ">" . $ch->name . "</option>";
+        //     }
+        //     $a .= '</optgroup>';
+        //     $sel .= $a;
+        // };
         $years = Anggaran::get();
 
 
@@ -186,21 +236,46 @@ class PencairanController extends Controller
     public function edit(Pencairan $pencairan)
     {
         // dd($pencairan->no_rek);
+        // $reks = ChildSubKegiatan::where('level_sub', 4)->get();
+        // $sel = "";
+        // foreach ($reks as $id) {
+        //     $a = "<optgroup label='" . $id->name . "'>";
+        //     $child = ChildSubKegiatan::where(['level_sub' => 5, 'child_of' => $id->id])->get();
+        //     foreach ($child as $ch) {
+        //         $stat = "";
+        //         if ($pencairan->no_rek == $ch->id) {
+        //             $stat = "selected";
+        //         }
+        //         $a .= "<option value='" . $ch->id . "' " . $stat . ">" . $ch->name . "</option>";
+        //     }
+        //     $a .= '</optgroup>';
+        //     $sel .= $a;
+        // };
+
         $reks = ChildSubKegiatan::where('level_sub', 4)->get();
+
+        $subkeg = SubKegiatan::with('lastChild')->get()->map(function ($value) {
+            $last = $value->lastChild->toArray();
+            // $value->flatten_child = $this->flattenArr($last);
+            $value->filtered = array_filter($this->flattenArr($last), function ($val) {
+                return $val['level_sub'] == 5;
+            });
+            return $value;
+        });
+
         $sel = "";
-        foreach ($reks as $id) {
-            $a = "<optgroup label='" . $id->name . "'>";
-            $child = ChildSubKegiatan::where(['level_sub' => 5, 'child_of' => $id->id])->get();
-            foreach ($child as $ch) {
-                $stat = "";
-                if ($pencairan->no_rek == $ch->id) {
-                    $stat = "selected";
+        foreach ($subkeg as $sk) {
+            $a = "<optgroup label='" . $sk['name'] . "'>";
+            foreach ($sk->filtered as $rek) {
+                $selected = "";
+                if ($pencairan->no_rek == $rek['id']) {
+                    $selected = "selected";
                 }
-                $a .= "<option value='" . $ch->id . "' " . $stat . ">" . $ch->name . "</option>";
+                $a .= "<option value='" . $rek['id'] . "' " . $selected . ">" . $rek['name'] . "</option>";
             }
             $a .= '</optgroup>';
             $sel .= $a;
-        };
+        }
         $years = Anggaran::get();
 
 
@@ -258,5 +333,33 @@ class PencairanController extends Controller
     {
         // dd($file);
         return response()->download($file);
+    }
+    public function flattenParent(array $array)
+    {
+        $branch = [];
+        if (isset($array['parentt'])) {
+            $parent = $this->flattenParent($array['parentt']);
+            unset($array['parentt']);
+            $branch = array_merge($branch, [$array], $parent);
+        } else {
+            $branch = array_merge($branch, [$array]);
+        }
+
+        return $branch;
+    }
+    public function flattenArr(array $array)
+    {
+        $branch = [];
+
+        foreach ($array as $item) {
+            $children = [];
+            if (isset($item['childd']) && is_array($item['childd'])) {
+                $children = $this->flattenArr($item['childd']);
+                unset($item['childd']);
+            }
+            $branch = array_merge($branch, [$item], $children);
+        }
+
+        return $branch;
     }
 }

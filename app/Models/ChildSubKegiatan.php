@@ -19,20 +19,29 @@ class ChildSubKegiatan extends Model
     public function parent()
     {
         return $this->belongsTo("App\Models\ChildSubKegiatan", 'child_of');
+        // super parent        
     }
-    public function rootParent()
+    public function superParent()
     {
-        return $this->parent()->with('rootParent');
-        // $count->count = 0;
+        return $this->belongsTo("App\Models\SubKegiatan", 'child_of', 'id');
+        // return 
     }
 
     public function childd()
     {
         return $this->child()->with('childd');
     }
+    public function parentt()
+    {
+        return $this->parent()->with('parentt');
+    }
 
     public function lastChild()
     {
         return $this->child()->with('childd');
+    }
+    public function rootParent()
+    {
+        return $this->parent()->with('parentt');
     }
 }

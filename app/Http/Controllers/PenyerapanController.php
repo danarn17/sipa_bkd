@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Anggaran;
 use App\Models\ChildSubKegiatan;
 use App\Models\Pencairan;
+use App\Models\SubKegiatan;
 use Illuminate\Http\Request;
 
 class PenyerapanController extends Controller
@@ -19,21 +20,28 @@ class PenyerapanController extends Controller
 
         $years = Anggaran::get();
 
-        $reks = ChildSubKegiatan::where('level_sub', 4)->get();
+        $subkeg = SubKegiatan::with('lastChild')->get()->map(function ($value) {
+            $last = $value->lastChild->toArray();
+            // $value->flatten_child = $this->flattenArr($last);
+            $value->filtered = array_filter($this->flattenArr($last), function ($val) {
+                return $val['level_sub'] == 5;
+            });
+            return $value;
+        });
+
         $sel = "";
-        foreach ($reks as $id) {
-            $a = "<optgroup label='" . $id->name . "'>";
-            $child = ChildSubKegiatan::where(['level_sub' => 5, 'child_of' => $id->id])->get();
-            foreach ($child as $ch) {
-                $stat = "";
-                if ($request['rekening'] == $ch->id) {
-                    $stat = "selected";
+        foreach ($subkeg as $sk) {
+            $a = "<optgroup label='" . $sk['name'] . "'>";
+            foreach ($sk->filtered as $rek) {
+                $selected = "";
+                if ($request['rekening'] == $rek['id']) {
+                    $selected = "selected";
                 }
-                $a .= "<option value='" . $ch->id . "' " . $stat . ">" . $ch->name . "</option>";
+                $a .= "<option value='" . $rek['id'] . "' " . $selected . ">" . $rek['name'] . "</option>";
             }
             $a .= '</optgroup>';
             $sel .= $a;
-        };
+        }
 
         if ($request->ajax()) {
             $data = $request->all();
@@ -61,13 +69,15 @@ class PenyerapanController extends Controller
                     }
                 }
 
-                $sisa_rek = $pertri->{$r} - $rek;
+                $reka = isset($pertri->{$r}) ? $pertri->{$r} : 0;
+
+                $sisa_rek = $reka - $rek;
                 if ($a == 2) {
-                    $sisa_rek = ($total[1] + $pertri->{$r}) - $rek;
+                    $sisa_rek = ($total[1] + $reka) - $rek;
                 } else if ($a == 3) {
-                    $sisa_rek = ($total[2] + $pertri->{$r}) - $rek;
+                    $sisa_rek = ($total[2] + $reka) - $rek;
                 } else if ($a == 4) {
-                    $sisa_rek = ($total[3] + $pertri->{$r}) - $rek;
+                    $sisa_rek = ($total[3] + $reka) - $rek;
                 }
 
                 // $triwulan[$r] = $sisa_rek;
@@ -180,5 +190,20 @@ class PenyerapanController extends Controller
     public function destroy($id)
     {
         //
+    }
+    public function flattenArr(array $array)
+    {
+        $branch = [];
+
+        foreach ($array as $item) {
+            $children = [];
+            if (isset($item['childd']) && is_array($item['childd'])) {
+                $children = $this->flattenArr($item['childd']);
+                unset($item['childd']);
+            }
+            $branch = array_merge($branch, [$item], $children);
+        }
+
+        return $branch;
     }
 }

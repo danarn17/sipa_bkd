@@ -43,52 +43,69 @@
                                         <div class="card-body">
                                             <h3 class="text-primary text-center">TRIWULAN {{ $i }}</h3>
                                             <br>
-                                            @foreach ($reks as $r)
 
-                                                <div class="form-group">
-                                                    <label>{{ $r->name }}</label>
-                                                    <div class="input-group mb-3">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text">Rp.</span>
-                                                        </div>
-                                                        @php
-                                                            $val = '';
-                                                        @endphp
-                                                        @switch($i)
-                                                            @case(1)
-                                                                @php
-                                                                    $val = json_decode($anggaran->triwulan_1)->data;
-                                                                @endphp
-                                                            @break
-                                                            @case(2)
-                                                                @php
-                                                                    $val = json_decode($anggaran->triwulan_2)->data;
-                                                                @endphp
-                                                            @break
-                                                            @case(3)
-                                                                @php
-                                                                    $val = json_decode($anggaran->triwulan_3)->data;
-                                                                @endphp
-                                                            @break
-                                                            @case(4)
-                                                                @php
-                                                                    $val = json_decode($anggaran->triwulan_4)->data;
-                                                                @endphp
-                                                            @break
-                                                            @default
-                                                                @php
-                                                                    $val = json_decode($anggaran->triwulan_1)->data;
-                                                                @endphp
-                                                        @endswitch
+                                            <ol type="1">
+                                                @foreach ($subkeg as $sk)
+                                                    <li>
+                                                        <h6>{{ $sk->name }}</h6>
+                                                        @foreach ($sk->filtered as $r)
+                                                            <div class="form-group">
+                                                                <label>{{ $r['name'] }}</label>
 
-                                                        <input class="form-control finn rek-{{ $i }}"
-                                                            data-rek="{{ $i }}"
-                                                            name="triwulan[{{ $i }}][{{ $r->id }}]"
-                                                            value="{{ $val->{$r->id} }}">
-                                                    </div>
-                                                    <hr>
-                                                </div>
-                                            @endforeach
+                                                                @php
+                                                                    $val = '';
+                                                                @endphp
+                                                                @switch($i)
+                                                                    @case(1)
+                                                                        @php
+                                                                            $val = json_decode($anggaran->triwulan_1)->data;
+                                                                        @endphp
+                                                                    @break
+                                                                    @case(2)
+                                                                        @php
+                                                                            $val = json_decode($anggaran->triwulan_2)->data;
+                                                                        @endphp
+                                                                    @break
+                                                                    @case(3)
+                                                                        @php
+                                                                            $val = json_decode($anggaran->triwulan_3)->data;
+                                                                        @endphp
+                                                                    @break
+                                                                    @case(4)
+                                                                        @php
+                                                                            $val = json_decode($anggaran->triwulan_4)->data;
+                                                                        @endphp
+                                                                    @break
+                                                                    @default
+                                                                        @php
+                                                                            $val = json_decode($anggaran->triwulan_1)->data;
+                                                                        @endphp
+                                                                @endswitch
+
+
+                                                                <div class="input-group mb-3">
+                                                                    <div class="input-group-prepend">
+                                                                        <span class="input-group-text">Rp.</span>
+                                                                    </div>
+
+
+                                                                    <input type="text"
+                                                                        class="form-control finn rek-{{ $i }}"
+                                                                        data-rek="{{ $i }}"
+                                                                        name="triwulan[{{ $i }}][{{ $r['id'] }}]"
+                                                                        value="{{ isset($val->{$r['id']}) ? $val->{$r['id']} : 0 }}">
+
+                                                                </div>
+                                                                <hr>
+                                                            </div>
+                                                        @endforeach
+                                                    </li>
+                                                @endforeach
+                                            </ol>
+
+
+
+
                                             <div class="text-center">
                                                 <h5>Total Anggaran</h5>
                                                 <input type="hidden" id="total_{{ $i }}"
@@ -114,42 +131,42 @@
     </section>
 @endsection
 @section('scripts')
-<script>
-    $(document).ready(() => {
-        function getTotal(a) {
-            var value = 0;
-            $('.rek-' + a).each(function(i, obj) {
-                var val = (this).value;
-                val = val.replace(/[($)\s\._\-]+/g, "");
-                value += parseInt(val);
-            });
-            $('#total_ang_' + a).html("Rp. " + value.toLocaleString("id-ID"));
-            $('#total_' + a).val(value);
-        }
-        for (var a = 1; a <= 4; a++) {
-            getTotal(a);
-        }
-        $(".finn").on("keyup", function(event) {
-            // When user select text in the document, also abort.
-            var selection = window.getSelection().toString();
-            if (selection !== '') {
-                return;
+    <script>
+        $(document).ready(() => {
+            function getTotal(a) {
+                var value = 0;
+                $('.rek-' + a).each(function(i, obj) {
+                    var val = (this).value;
+                    val = val.replace(/[($)\s\._\-]+/g, "");
+                    value += parseInt(val);
+                });
+                $('#total_ang_' + a).html("Rp. " + value.toLocaleString("id-ID"));
+                $('#total_' + a).val(value);
             }
-            // When the arrow keys are pressed, abort.
-            if ($.inArray(event.keyCode, [38, 40, 37, 39]) !== -1) {
-                return;
+            for (var a = 1; a <= 4; a++) {
+                getTotal(a);
             }
-            var $this = $(this);
-            // Get the value.
+            $(".finn").on("keyup", function(event) {
+                // When user select text in the document, also abort.
+                var selection = window.getSelection().toString();
+                if (selection !== '') {
+                    return;
+                }
+                // When the arrow keys are pressed, abort.
+                if ($.inArray(event.keyCode, [38, 40, 37, 39]) !== -1) {
+                    return;
+                }
+                var $this = $(this);
+                // Get the value.
 
-            var input = $this.val();
-            var input = input.replace(/[\D\s\._\-]+/g, "");
-            input = input ? parseInt(input, 10) : 0;
-            $this.val(function() {
-                return (input === 0) ? 0 : input.toLocaleString("id-ID");
+                var input = $this.val();
+                var input = input.replace(/[\D\s\._\-]+/g, "");
+                input = input ? parseInt(input, 10) : 0;
+                $this.val(function() {
+                    return (input === 0) ? 0 : input.toLocaleString("id-ID");
+                });
+                getTotal($(this).data('rek'));
             });
-            getTotal($(this).data('rek'));
         });
-    });
-</script>
+    </script>
 @endsection

@@ -23,7 +23,7 @@
                             {{-- <button type="button" id="btn-add" class="btn btn-success" data-toggle="modal"
                                 data-target="#form-modal">Tambah</button> --}}
                             @hasanyrole('webmaster|admin')
-                            <a href={{ route('pencairan.create') }} class="btn btn-success">Tambah</a>
+                                <a href={{ route('pencairan.create') }} class="btn btn-success">Tambah</a>
                             @endhasanyrole
 
                         </div>
@@ -31,12 +31,10 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label><strong>Tahun :</strong></label>
-                                        <select name="year" id="year" class="custom-select form-control">
-                                            <option value="all">Semua</option>
-                                            @foreach ($years as $year)
-                                                <option value="{{ $year->id }}" @if (now()->year == $year->year) selected @endif>{{ $year->year }}</option>
-                                            @endforeach
+                                        <label><strong>Rekening :</strong></label>
+                                        <select class="custom-select form-control" name="reks" id="reks">
+                                            <option value="all" selected>Semua</option>
+                                            {!! $sel !!}
                                         </select>
                                     </div>
                                 </div>
@@ -54,13 +52,18 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label><strong>Rekening :</strong></label>
-                                        <select class="custom-select form-control" name="reks" id="reks">
-                                            <option value="all" selected>Semua</option>
-                                            {!! $sel !!}
+                                        <label><strong>Tahun :</strong></label>
+                                        <select name="year" id="year" class="custom-select form-control">
+                                            <option value="all">Semua</option>
+                                            @foreach ($years as $year)
+                                                <option value="{{ $year->id }}" @if (now()->year == $year->year) selected @endif>
+                                                    {{ $year->year }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
+
+
                             </div>
 
                             <div class="table-striped ">
@@ -77,7 +80,7 @@
                                                 <th>Tgl. Pencairan</th>
                                                 <th>Download</th>
                                                 @hasanyrole('webmaster|admin')
-                                                <th>Aksi</th>
+                                                    <th>Aksi</th>
                                                 @endhasanyrole
                                             </tr>
                                         </thead>
@@ -116,8 +119,8 @@
         </script>
     @endif
     @hasanyrole('webmaster|admin')
-    <script>
-        {{-- $(document).ready(function() { --}}
+        <script>
+            {{-- $(document).ready(function() { --}}
             const table = $('#dataTable').DataTable({
                 processing: true,
                 serverSide: true,
@@ -180,11 +183,11 @@
                     },
                 ]
             });
-        {{-- }) --}}
-    </script>
-@else
-    <script>
-        {{-- $(document).ready(function() { --}}
+            {{-- }) --}}
+        </script>
+    @else
+        <script>
+            {{-- $(document).ready(function() { --}}
             const table = $('#dataTable').DataTable({
                 processing: true,
                 serverSide: true,
@@ -241,11 +244,11 @@
 
                 ]
             });
-        {{-- }) --}}
-    </script>
+            {{-- }) --}}
+        </script>
     @endhasanyrole
     <script>
-    $(document).ready(function() {
+        $(document).ready(function() {
             $('#year, #triwulan, #reks').change(function() {
                 table.draw();
             });

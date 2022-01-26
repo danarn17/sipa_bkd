@@ -184,17 +184,20 @@ class AnggaranController extends Controller
                         $rek += $p->nominal;
                     }
                 }
-                $sisa_rek = $pertri->{$r} - $rek;
+
+                $reka = isset($pertri->{$r}) ? $pertri->{$r} : 0;
+
+                $sisa_rek = $reka - $rek;
                 // if ($a > 1) {
                 //     $b = $a - 1;
-                //     $sisa_rek = ($penyerapan[$b][$r] + $pertri->{$r}) - $rek;
+                //     $sisa_rek = ($penyerapan[$b][$r] + $reka) - $rek;
                 // }
                 if ($a == 2) {
-                    $sisa_rek = ($penyerapan[1][$r] + $pertri->{$r}) - $rek;
+                    $sisa_rek = ($penyerapan[1][$r] + $reka) - $rek;
                 } else if ($a == 3) {
-                    $sisa_rek = ($penyerapan[2][$r] + $pertri->{$r}) - $rek;
+                    $sisa_rek = ($penyerapan[2][$r] + $reka) - $rek;
                 } else if ($a == 4) {
-                    $sisa_rek = ($penyerapan[3][$r] + $pertri->{$r}) - $rek;
+                    $sisa_rek = ($penyerapan[3][$r] + $reka) - $rek;
                 }
 
                 $triwulan[$r] = $sisa_rek;
@@ -245,8 +248,16 @@ class AnggaranController extends Controller
      */
     public function edit(Anggaran $anggaran)
     {
-        $reks = ChildSubKegiatan::where('level_sub', 5)->get();
-        return view('admin.anggaran.edit', compact('reks', 'anggaran'));
+        // $reks = ChildSubKegiatan::where('level_sub', 5)->get();
+        $subkeg = SubKegiatan::with('lastChild')->get()->map(function ($value) {
+            $last = $value->lastChild->toArray();
+            // $value->flatten_child = $this->flattenArr($last);
+            $value->filtered = array_filter($this->flattenArr($last), function ($val) {
+                return $val['level_sub'] == 5;
+            });
+            return $value;
+        });
+        return view('admin.anggaran.edit', compact('subkeg', 'anggaran'));
     }
 
     /**
